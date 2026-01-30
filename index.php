@@ -203,18 +203,26 @@ elseif ( isset( $_POST['USERNAME'] )
 			|| $login_RET[1]['PROFILE'] === 'teacher'
 			|| $login_RET[1]['PROFILE'] === 'parent' ) )
 	{
-		$_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
+		if ( Config( 'MAINTENANCE_MODE' )
+			&& $login_RET[1]['PROFILE'] !== 'admin' )
+		{
+			$error[] = _( 'System is under maintenance.' );
+		}
+		else
+		{
+			$_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
 
-		// Invalidate any active Student session.
-		unset( $_SESSION['STUDENT_ID'] );
+			// Invalidate any active Student session.
+			unset( $_SESSION['STUDENT_ID'] );
 
-		unset( $_SESSION['UserSchool'] );
+			unset( $_SESSION['UserSchool'] );
 
-		$_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
+			$_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
 
-		$failed_login = $login_RET[1]['FAILED_LOGIN'];
+			$failed_login = $login_RET[1]['FAILED_LOGIN'];
 
-		$login_status = 'Y';
+			$login_status = 'Y';
+		}
 	}
 
 	// User with No access profile.
@@ -244,18 +252,25 @@ elseif ( isset( $_POST['USERNAME'] )
 	// Student: initiate session.
 	elseif ( $student_RET )
 	{
-		$_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
+		if ( Config( 'MAINTENANCE_MODE' ) )
+		{
+			$error[] = _( 'System is under maintenance.' );
+		}
+		else
+		{
+			$_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
 
-		// Invalidate any active User session.
-		unset( $_SESSION['STAFF_ID'] );
+			// Invalidate any active User session.
+			unset( $_SESSION['STAFF_ID'] );
 
-		unset( $_SESSION['UserSchool'] );
+			unset( $_SESSION['UserSchool'] );
 
-		$_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
+			$_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
 
-		$failed_login = $student_RET[1]['FAILED_LOGIN'];
+			$failed_login = $student_RET[1]['FAILED_LOGIN'];
 
-		$login_status = 'Y';
+			$login_status = 'Y';
+		}
 	}
 
 	// Failed login.
