@@ -26,6 +26,7 @@ $menu['School_Setup']['admin'] = [
 	'School_Setup/Configuration.php' => _( 'Configuration' ),
 	2 => _( 'Utilities' ),
 	'School_Setup/Rollover.php' => _( 'Rollover' ),
+	'School_Setup/Latch.php' => _( 'Latch System' ),
 	3 => dgettext( 'Access_Log', _( 'Security' ) ),
 	'School_Setup/AccessLog.php' => _( 'Access Log' ),
 	'School_Setup/DatabaseBackup.php' => _( 'Database Backup' ),

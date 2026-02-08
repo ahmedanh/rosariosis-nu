@@ -303,3 +303,67 @@ function RolloverUpdateDefaultSyear( $next_syear )
 
 	return file_put_contents( 'config.inc.php', $config_contents );
 }
+
+/**
+ * Get Tables to rollover
+ *
+ * @since 12.8
+ *
+ * @param  int $next_syear Next School Year.
+ *
+ * @return array Tables to rollover.
+ */
+function RolloverGetTables( $next_syear )
+{
+	global $RosarioModules;
+
+	$tables = [
+		'schools' => _( 'Schools' ),
+		'staff' => _( 'Users' ),
+		'school_periods' => _( 'School Periods' ),
+		'school_marking_periods' => _( 'Marking Periods' ),
+		'attendance_calendars' => _( 'Calendars' ),
+		'report_card_grades' => _( 'Grading Scales' ),
+		'attendance_codes' => _( 'Attendance Codes' ),
+		'courses' => _( 'Courses' ),
+		'student_enrollment_codes' => _( 'Student Enrollment Codes' ),
+		'student_enrollment' => _( 'Students' ),
+		'report_card_comments' => _( 'Report Card Comments' ),
+		'program_config' => _( 'School Configuration' ),
+	];
+
+	if ( $RosarioModules['Eligibility'] )
+	{
+		$tables += [ 'eligibility_activities' => _( 'Eligibility Activities' ) ];
+	}
+
+	if ( $RosarioModules['Food_Service'] )
+	{
+		$tables += [ 'food_service_staff_accounts' => _( 'Food Service Staff Accounts' ) ];
+	}
+
+	if ( $RosarioModules['Discipline'] )
+	{
+		$tables += [ 'discipline_field_usage' => _( 'Referral Form' ) ];
+	}
+
+	$can_delete_courses = DBTransDryRun( RolloverDeleteCoursesSQL( $next_syear ) );
+
+	if ( ! $can_delete_courses )
+	{
+		/**
+		 * If cannot roll Courses (due to foreign keys), remove from list + dependent tables
+		 * Namely users, school periods, marking periods, calendars, and report card codes
+		 *
+		 * @since 11.4
+		 */
+		unset( $tables['courses'] );
+		unset( $tables['staff'] );
+		unset( $tables['school_periods'] );
+		unset( $tables['school_marking_periods'] );
+		unset( $tables['attendance_calendars'] );
+		unset( $tables['report_card_grades'] );
+	}
+
+	return $tables;
+}

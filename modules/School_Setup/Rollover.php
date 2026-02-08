@@ -111,20 +111,7 @@ elseif ( $DefaultSyear !== UserSyear() )
 	return;
 }
 
-$tables = [
-	'schools' => _( 'Schools' ),
-	'staff' => _( 'Users' ),
-	'school_periods' => _( 'School Periods' ),
-	'school_marking_periods' => _( 'Marking Periods' ),
-	'attendance_calendars' => _( 'Calendars' ),
-	'report_card_grades' => _( 'Grading Scales' ),
-	'attendance_codes' => _( 'Attendance Codes' ),
-	'courses' => _( 'Courses' ),
-	'student_enrollment_codes' => _( 'Student Enrollment Codes' ),
-	'student_enrollment' => _( 'Students' ),
-	'report_card_comments' => _( 'Report Card Comments' ),
-	'program_config' => _( 'School Configuration' ),
-];
+$tables = RolloverGetTables( $next_syear );
 
 $tables_tooltip = [
 	'courses' => _( 'You <i>must</i> roll users, school periods, marking periods, calendars, and grading scales at the same time or before rolling courses.' ),
@@ -133,39 +120,6 @@ $tables_tooltip = [
 ];
 
 $no_school_tables = [ 'schools' => true, 'student_enrollment_codes' => true, 'staff' => true, 'program_config' => true ];
-
-if ( $RosarioModules['Eligibility'] )
-{
-	$tables += [ 'eligibility_activities' => _( 'Eligibility Activities' ) ];
-}
-
-if ( $RosarioModules['Food_Service'] )
-{
-	$tables += [ 'food_service_staff_accounts' => _( 'Food Service Staff Accounts' ) ];
-}
-
-if ( $RosarioModules['Discipline'] )
-{
-	$tables += [ 'discipline_field_usage' => _( 'Referral Form' ) ];
-}
-
-$can_delete_courses = DBTransDryRun( RolloverDeleteCoursesSQL( $next_syear ) );
-
-if ( ! $can_delete_courses )
-{
-	/**
-	 * If cannot roll Courses (due to foreign keys), remove from list + dependent tables
-	 * Namely users, school periods, marking periods, calendars, and report card codes
-	 *
-	 * @since 11.4
-	 */
-	unset( $tables['courses'] );
-	unset( $tables['staff'] );
-	unset( $tables['school_periods'] );
-	unset( $tables['school_marking_periods'] );
-	unset( $tables['attendance_calendars'] );
-	unset( $tables['report_card_grades'] );
-}
 
 $table_list = '<table class="widefat center">';
 

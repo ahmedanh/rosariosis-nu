@@ -419,6 +419,21 @@ else
 			// FJ add Security to Configuration.
 			echo '<tr><td><fieldset><legend>' . _( 'Security' ) . '</legend><table>';
 
+			// @since 12.8 Maintenance Mode.
+			echo '<tr><td>' . CheckboxInput(
+				Config( 'MAINTENANCE_MODE' ),
+				'values[config][MAINTENANCE_MODE]',
+				_( 'Maintenance Mode' ) .
+				'<div class="tooltip"><i>' .
+				_( 'Prevent users from logging in.' ) . ' ' .
+				_( 'Only Administrators will be able to log in.' ) .
+				'</i></div>',
+				'',
+				false,
+				button( 'check' ),
+				button( 'x' )
+			) . '</td></tr>';
+
 			// Failed login ban if >= X failed attempts within 10 minutes.
 			echo '<tr><td>' . TextInput(
 				Config( 'FAILED_LOGIN_LIMIT' ),

@@ -270,6 +270,21 @@ if ( empty( $_SESSION['DefaultSyear'] ) )
 	$_SESSION['DefaultSyear'] = $DefaultSyear;
 }
 
+if ( Config( 'MAINTENANCE_MODE' )
+	&& User( 'PROFILE' ) !== 'admin'
+	&& ( ! empty( $_SESSION['STAFF_ID'] )
+		|| ! empty( $_SESSION['STUDENT_ID'] ) ) )
+{
+	unset( $_SESSION['STAFF_ID'] );
+	unset( $_SESSION['STUDENT_ID'] );
+
+	session_destroy();
+
+	header( 'Location: index.php' );
+
+	exit;
+}
+
 if ( empty( $_SESSION['token'] ) )
 {
 	/**
